@@ -1,9 +1,16 @@
 # Tensor Bridge
 
-Tensor Bridge is an [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) as well as a simple [Connexion](https://github.com/zalando/connexion) wrapper for [TensorFlow Serving](https://github.com/tensorflow/serving).
+Tensor Bridge is an [OpenAPI (Swagger) Specification](https://github.com/OAI/OpenAPI-Specification) as well as a simple [Connexion](https://github.com/zalando/connexion) wrapper for [TensorFlow Serving](https://github.com/tensorflow/serving).
 
 The specification was obtained by compiling an annotated `tensor_bridge.proto` using [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway).
 The result is located in `swagger/tensor_bridge.json`.
+
+## Deprecation notice
+
+TensorFlow now supports [REST API](https://www.tensorflow.org/serving/api_rest) natively as of version [v1.8.0](https://github.com/tensorflow/serving/releases/tag/1.8.0).
+Tensor Bridge API is still useful as the exact REST equivalent of the TF gRPC API.
+However, we deprecate this project and recommend using the official TF REST API for new developments.
+
 
 ## How is this useful?
 

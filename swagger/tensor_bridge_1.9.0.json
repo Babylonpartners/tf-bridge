@@ -1,0 +1,806 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "tensorflow_serving/apis/tensor_bridge.proto",
+    "version": "1.9.0"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/tensor-bridge/v1/classification": {
+      "post": {
+        "summary": "Classify.",
+        "operationId": "Classify",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/servingClassificationResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/servingClassificationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PredictionService"
+        ]
+      }
+    },
+    "/tensor-bridge/v1/modelmetadata": {
+      "post": {
+        "summary": "GetModelMetadata - provides access to metadata for loaded models.",
+        "operationId": "GetModelMetadata",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/servingGetModelMetadataResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/servingGetModelMetadataRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PredictionService"
+        ]
+      }
+    },
+    "/tensor-bridge/v1/multi-inference": {
+      "post": {
+        "summary": "MultiInference API for multi-headed models.",
+        "operationId": "MultiInference",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/servingMultiInferenceResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/servingMultiInferenceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PredictionService"
+        ]
+      }
+    },
+    "/tensor-bridge/v1/prediction": {
+      "post": {
+        "summary": "Predict -- provides access to loaded TensorFlow model.",
+        "operationId": "Predict",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/servingPredictResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/servingPredictRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PredictionService"
+        ]
+      }
+    },
+    "/tensor-bridge/v1/regression": {
+      "post": {
+        "summary": "Regress.",
+        "operationId": "Regress",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/servingRegressionResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/servingRegressionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PredictionService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "TensorShapeProtoDim": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string",
+          "format": "int64",
+          "description": "Size of the tensor in that dimension.\nThis value must be \u003e= -1, but values of -1 are reserved for \"unknown\"\nshapes (values of -1 mean \"unknown\" dimension).  Certain wrappers\nthat work with TensorShapeProto may fail at runtime when deserializing\na TensorShapeProto containing a dim value of -1."
+        },
+        "name": {
+          "type": "string",
+          "description": "Optional name of the tensor dimension."
+        }
+      },
+      "description": "One dimension of the tensor."
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string",
+          "description": "A URL/resource name whose content describes the type of the\nserialized protocol buffer message.\n\nFor URLs which use the scheme `http`, `https`, or no scheme, the\nfollowing restrictions and interpretations apply:\n\n* If no scheme is provided, `https` is assumed.\n* The last segment of the URL's path must represent the fully\n  qualified name of the type (as in `path/google.protobuf.Duration`).\n  The name should be in a canonical form (e.g., leading \".\" is\n  not accepted).\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "description": "Must be a valid serialized protocol buffer of the above specified type."
+        }
+      },
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "servingClass": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Label or name of the class."
+        },
+        "score": {
+          "type": "number",
+          "format": "float",
+          "description": "Score for this class (e.g., the probability the item belongs to this\nclass)."
+        }
+      },
+      "description": "A single class."
+    },
+    "servingClassificationRequest": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Model Specification. If version is not specified, will use the latest\n(numerical) version."
+        },
+        "input": {
+          "$ref": "#/definitions/servingInput",
+          "description": "Input data."
+        }
+      }
+    },
+    "servingClassificationResponse": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Effective Model Specification used for classification."
+        },
+        "result": {
+          "$ref": "#/definitions/servingClassificationResult",
+          "description": "Result of the classification."
+        }
+      }
+    },
+    "servingClassificationResult": {
+      "type": "object",
+      "properties": {
+        "classifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/servingClassifications"
+          }
+        }
+      },
+      "description": "Contains one result per input example, in the same order as the input in\nClassificationRequest."
+    },
+    "servingClassifications": {
+      "type": "object",
+      "properties": {
+        "classes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/servingClass"
+          }
+        }
+      },
+      "description": "List of classes for a single item (tensorflow.Example)."
+    },
+    "servingExampleList": {
+      "type": "object",
+      "properties": {
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tensorflowExample"
+          }
+        }
+      },
+      "title": "Specifies one or more fully independent input Examples.\nSee examples at:\n    https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto"
+    },
+    "servingExampleListWithContext": {
+      "type": "object",
+      "properties": {
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tensorflowExample"
+          }
+        },
+        "context": {
+          "$ref": "#/definitions/tensorflowExample"
+        }
+      },
+      "description": "Specifies one or more independent input Examples, with a common context\nExample.\n\nThe common use case for context is to cleanly and optimally specify some\nfeatures that are common across multiple examples.\n\nSee example below with a search query as the context and multiple restaurants\nto perform some inference on.\n\ncontext: {\n  feature: {\n    key  : \"query\"\n    value: {\n      bytes_list: {\n        value: [ \"pizza\" ]\n      }\n    }\n  }\n}\nexamples: {\n  feature: {\n    key  : \"cuisine\"\n    value: {\n      bytes_list: {\n        value: [ \"Pizzeria\" ]\n      }\n    }\n  }\n}\nexamples: {\n  feature: {\n    key  : \"cuisine\"\n    value: {\n      bytes_list: {\n        value: [ \"Taqueria\" ]\n      }\n    }\n  }\n}\n\nImplementations of ExampleListWithContext merge the context Example into each\nof the Examples. Note that feature keys must not be duplicated between the\nExamples and context Example, or the behavior is undefined.\n\nSee also:\n    tensorflow/core/example/example.proto\n    https://developers.google.com/protocol-buffers/docs/proto3#maps"
+    },
+    "servingGetModelMetadataRequest": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Model Specification indicating which model we are querying for metadata.\nIf version is not specified, will use the latest (numerical) version."
+        },
+        "metadata_field": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Metadata fields to get. Currently supported: \"signature_def\"."
+        }
+      }
+    },
+    "servingGetModelMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Model Specification indicating which model this metadata belongs to."
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufAny"
+          },
+          "description": "Map of metadata field name to metadata field. The options for metadata\nfield name are listed in GetModelMetadataRequest. Currently supported:\n\"signature_def\"."
+        }
+      }
+    },
+    "servingInferenceResult": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec"
+        },
+        "classification_result": {
+          "$ref": "#/definitions/servingClassificationResult"
+        },
+        "regression_result": {
+          "$ref": "#/definitions/servingRegressionResult"
+        }
+      },
+      "description": "Inference result, matches the type of request or is an error."
+    },
+    "servingInferenceTask": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Model Specification. If version is not specified, will use the latest\n(numerical) version.\nAll ModelSpecs in a MultiInferenceRequest must access the same model name."
+        },
+        "method_name": {
+          "type": "string",
+          "description": "Signature's method_name. Should be one of the method names defined in\nthird_party/tensorflow/python/saved_model/signature_constants.py.\ne.g. \"tensorflow/serving/classify\"."
+        }
+      },
+      "description": "Inference request such as classification, regression, etc..."
+    },
+    "servingInput": {
+      "type": "object",
+      "properties": {
+        "example_list": {
+          "$ref": "#/definitions/servingExampleList"
+        },
+        "example_list_with_context": {
+          "$ref": "#/definitions/servingExampleListWithContext"
+        }
+      }
+    },
+    "servingModelSpec": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Required servable name."
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Optional version. Recommended to be left unset in the common case. Should\nbe specified only when there is a strong version consistency requirement.\n\nWhen left unspecified, the system will serve the best available version.\nThis is typically the latest version, though during version transitions,\nnotably when serving on a fleet of instances, may be either the previous or\nnew version."
+        },
+        "signature_name": {
+          "type": "string",
+          "description": "A named signature to evaluate. If unspecified, the default signature will\nbe used."
+        }
+      },
+      "description": "Metadata for an inference request such as the model name and version."
+    },
+    "servingMultiInferenceRequest": {
+      "type": "object",
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/servingInferenceTask"
+          },
+          "description": "Inference tasks."
+        },
+        "input": {
+          "$ref": "#/definitions/servingInput",
+          "description": "Input data."
+        }
+      },
+      "description": "Inference request containing one or more requests."
+    },
+    "servingMultiInferenceResponse": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/servingInferenceResult"
+          },
+          "description": "List of results; one for each InferenceTask in the request, returned in the\nsame order as the request."
+        }
+      },
+      "description": "Inference request containing one or more responses."
+    },
+    "servingPredictRequest": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Model Specification. If version is not specified, will use the latest\n(numerical) version."
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/tensorflowTensorProto"
+          },
+          "description": "Input tensors.\nNames of input tensor are alias names. The mapping from aliases to real\ninput tensor names is stored in the SavedModel export as a prediction\nSignatureDef under the 'inputs' field."
+        },
+        "output_filter": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Output filter.\nNames specified are alias names. The mapping from aliases to real output\ntensor names is stored in the SavedModel export as a prediction\nSignatureDef under the 'outputs' field.\nOnly tensors specified here will be run/fetched and returned, with the\nexception that when none is specified, all tensors specified in the\nnamed signature will be run/fetched and returned."
+        }
+      },
+      "description": "PredictRequest specifies which TensorFlow model to run, as well as\nhow inputs are mapped to tensors and how outputs are filtered before\nreturning to user."
+    },
+    "servingPredictResponse": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Effective Model Specification used to process PredictRequest."
+        },
+        "outputs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/tensorflowTensorProto"
+          },
+          "description": "Output tensors."
+        }
+      },
+      "description": "Response for PredictRequest on successful run."
+    },
+    "servingRegression": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "format": "float"
+        }
+      },
+      "description": "Regression result for a single item (tensorflow.Example)."
+    },
+    "servingRegressionRequest": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Model Specification. If version is not specified, will use the latest\n(numerical) version."
+        },
+        "input": {
+          "$ref": "#/definitions/servingInput",
+          "description": "Input data."
+        }
+      }
+    },
+    "servingRegressionResponse": {
+      "type": "object",
+      "properties": {
+        "model_spec": {
+          "$ref": "#/definitions/servingModelSpec",
+          "description": "Effective Model Specification used for regression."
+        },
+        "result": {
+          "$ref": "#/definitions/servingRegressionResult"
+        }
+      }
+    },
+    "servingRegressionResult": {
+      "type": "object",
+      "properties": {
+        "regressions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/servingRegression"
+          }
+        }
+      },
+      "description": "Contains one result per input example, in the same order as the input in\nRegressionRequest."
+    },
+    "tensorflowBytesList": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "description": "Containers to hold repeated fundamental values."
+    },
+    "tensorflowDataType": {
+      "type": "string",
+      "enum": [
+        "DT_INVALID",
+        "DT_FLOAT",
+        "DT_DOUBLE",
+        "DT_INT32",
+        "DT_UINT8",
+        "DT_INT16",
+        "DT_INT8",
+        "DT_STRING",
+        "DT_COMPLEX64",
+        "DT_INT64",
+        "DT_BOOL",
+        "DT_QINT8",
+        "DT_QUINT8",
+        "DT_QINT32",
+        "DT_BFLOAT16",
+        "DT_QINT16",
+        "DT_QUINT16",
+        "DT_UINT16",
+        "DT_COMPLEX128",
+        "DT_HALF",
+        "DT_RESOURCE",
+        "DT_VARIANT",
+        "DT_UINT32",
+        "DT_UINT64",
+        "DT_FLOAT_REF",
+        "DT_DOUBLE_REF",
+        "DT_INT32_REF",
+        "DT_UINT8_REF",
+        "DT_INT16_REF",
+        "DT_INT8_REF",
+        "DT_STRING_REF",
+        "DT_COMPLEX64_REF",
+        "DT_INT64_REF",
+        "DT_BOOL_REF",
+        "DT_QINT8_REF",
+        "DT_QUINT8_REF",
+        "DT_QINT32_REF",
+        "DT_BFLOAT16_REF",
+        "DT_QINT16_REF",
+        "DT_QUINT16_REF",
+        "DT_UINT16_REF",
+        "DT_COMPLEX128_REF",
+        "DT_HALF_REF",
+        "DT_RESOURCE_REF",
+        "DT_VARIANT_REF",
+        "DT_UINT32_REF",
+        "DT_UINT64_REF"
+      ],
+      "default": "DT_INVALID",
+      "description": "- DT_INVALID: Not a legal value for DataType.  Used to indicate a DataType field\nhas not been set.\n - DT_FLOAT: Data types that all computation devices are expected to be\ncapable to support.\n - DT_FLOAT_REF: Do not use!  These are only for parameters.  Every enum above\nshould have a corresponding value below (verified by types_test).",
+      "title": "LINT.IfChange"
+    },
+    "tensorflowExample": {
+      "type": "object",
+      "properties": {
+        "features": {
+          "$ref": "#/definitions/tensorflowFeatures"
+        }
+      }
+    },
+    "tensorflowFeature": {
+      "type": "object",
+      "properties": {
+        "bytes_list": {
+          "$ref": "#/definitions/tensorflowBytesList"
+        },
+        "float_list": {
+          "$ref": "#/definitions/tensorflowFloatList"
+        },
+        "int64_list": {
+          "$ref": "#/definitions/tensorflowInt64List"
+        }
+      },
+      "description": "Containers for non-sequential data."
+    },
+    "tensorflowFeatures": {
+      "type": "object",
+      "properties": {
+        "feature": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/tensorflowFeature"
+          },
+          "description": "Map from feature name to feature."
+        }
+      }
+    },
+    "tensorflowFloatList": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      }
+    },
+    "tensorflowInt64List": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "tensorflowResourceHandleProto": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "string",
+          "description": "Unique name for the device containing the resource."
+        },
+        "container": {
+          "type": "string",
+          "description": "Container in which this resource is placed."
+        },
+        "name": {
+          "type": "string",
+          "description": "Unique name of this resource."
+        },
+        "hash_code": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Hash code for the type of the resource. Is only valid in the same device\nand in the same execution."
+        },
+        "maybe_type_name": {
+          "type": "string",
+          "description": "For debug-only, the name of the type pointed to by this handle, if\navailable."
+        }
+      },
+      "description": "Protocol buffer representing a handle to a tensorflow resource. Handles are\nnot valid across executions, but can be serialized back and forth from within\na single run."
+    },
+    "tensorflowTensorProto": {
+      "type": "object",
+      "properties": {
+        "dtype": {
+          "$ref": "#/definitions/tensorflowDataType"
+        },
+        "tensor_shape": {
+          "$ref": "#/definitions/tensorflowTensorShapeProto",
+          "description": "Shape of the tensor.  TODO(touts): sort out the 0-rank issues."
+        },
+        "version_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Version number.\n\nIn version 0, if the \"repeated xxx\" representations contain only one\nelement, that element is repeated to fill the shape.  This makes it easy\nto represent a constant Tensor with a single value."
+        },
+        "tensor_content": {
+          "type": "string",
+          "format": "byte",
+          "description": "Serialized raw tensor content from either Tensor::AsProtoTensorContent or\nmemcpy in tensorflow::grpc::EncodeTensorToByteBuffer. This representation\ncan be used for all tensor types. The purpose of this representation is to\nreduce serialization overhead during RPC call by avoiding serialization of\nmany repeated small items."
+        },
+        "half_val": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": "DT_HALF, DT_BFLOAT16. Note that since protobuf has no int16 type, we'll\nhave some pointless zero padding for each value here."
+        },
+        "float_val": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "float"
+          },
+          "description": "DT_FLOAT."
+        },
+        "double_val": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": "DT_DOUBLE."
+        },
+        "int_val": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": "DT_INT32, DT_INT16, DT_INT8, DT_UINT8."
+        },
+        "string_val": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "title": "DT_STRING"
+        },
+        "scomplex_val": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "float"
+          },
+          "description": "DT_COMPLEX64. scomplex_val(2*i) and scomplex_val(2*i+1) are real\nand imaginary parts of i-th single precision complex."
+        },
+        "int64_val": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          },
+          "title": "DT_INT64"
+        },
+        "bool_val": {
+          "type": "array",
+          "items": {
+            "type": "boolean",
+            "format": "boolean"
+          },
+          "title": "DT_BOOL"
+        },
+        "dcomplex_val": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": "DT_COMPLEX128. dcomplex_val(2*i) and dcomplex_val(2*i+1) are real\nand imaginary parts of i-th double precision complex."
+        },
+        "resource_handle_val": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tensorflowResourceHandleProto"
+          },
+          "title": "DT_RESOURCE"
+        },
+        "variant_val": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tensorflowVariantTensorDataProto"
+          },
+          "title": "DT_VARIANT"
+        },
+        "uint32_val": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": "DT_UINT32"
+        },
+        "uint64_val": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          },
+          "title": "DT_UINT64"
+        }
+      },
+      "description": "Protocol buffer representing a tensor."
+    },
+    "tensorflowTensorShapeProto": {
+      "type": "object",
+      "properties": {
+        "dim": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TensorShapeProtoDim"
+          },
+          "description": "Dimensions of the tensor, such as {\"input\", 30}, {\"output\", 40}\nfor a 30 x 40 2D tensor.  If an entry has size -1, this\ncorresponds to a dimension of unknown size. The names are\noptional.\n\nThe order of entries in \"dim\" matters: It indicates the layout of the\nvalues in the tensor in-memory representation.\n\nThe first entry in \"dim\" is the outermost dimension used to layout the\nvalues, the last entry is the innermost dimension.  This matches the\nin-memory layout of RowMajor Eigen tensors.\n\nIf \"dim.size()\" \u003e 0, \"unknown_rank\" must be false."
+        },
+        "unknown_rank": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "If true, the number of dimensions in the shape is unknown.\n\nIf true, \"dim.size()\" must be 0."
+        }
+      },
+      "description": "Dimensions of a tensor."
+    },
+    "tensorflowVariantTensorDataProto": {
+      "type": "object",
+      "properties": {
+        "type_name": {
+          "type": "string",
+          "description": "Name of the type of objects being serialized."
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte",
+          "description": "Portions of the object that are not Tensors."
+        },
+        "tensors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tensorflowTensorProto"
+          },
+          "description": "Tensors contained within objects being serialized."
+        }
+      },
+      "description": "Protocol buffer representing the serialization format of DT_VARIANT tensors."
+    }
+  }
+}
